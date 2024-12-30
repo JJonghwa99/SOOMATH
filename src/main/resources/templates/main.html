@@ -8,21 +8,62 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://use.fontawesome.com/releases/v6.0.0/js/all.js"></script>
     <link href="/css/nav.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
 </head>
 <body>
 <!-- 네비게이션 바 포함 -->
 <div th:replace="~{nav :: navbar}"></div>
 
 <main>
+    <div class="main-container">
+        <!-- 왼쪽 영역 -->
+        <div class="left-section">
+            <div class="profile-card">
+                <h3>선생님 소개</h3>
+                <p>이곳에 선생님의 약력이나 간단한 소개를 작성하세요.</p>
+            </div>
+            <div class="timetable-section">
+                <h3>수업 시간표</h3>
+                <div class="timetable-card">
+                    <p>월요일: 10:00 - 12:00</p>
+                    <p>수요일: 14:00 - 16:00</p>
+                </div>
+            </div>
+        </div>
 
-    <!--나머지는 통일-->
-    <h1>Welcome to the Main Page</h1>
-    <p>This is the main content area.</p>
-
-
-    <!--관리자용 화면-->
-    <!--sec:authorize="hasAuthority('ROLE_ADMIN')"-->
+        <!-- 오른쪽 영역 -->
+        <div class="right-section">
+            <div class="review-container">
+                <h3>수강생 리뷰</h3>
+                <div class="review-wrapper">
+                    <div class="card-slider">
+                        <div class="review-card">
+                            <p><strong>김학생</strong>: 강의가 정말 좋아요!</p>
+                        </div>
+                        <div class="review-card">
+                            <p><strong>이학생</strong>: 선생님이 정말 친절해요.</p>
+                        </div>
+                        <div class="review-card">
+                            <p><strong>박학생</strong>: 덕분에 시험을 잘 봤어요!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ranking-section">
+                <h3>학생 랭킹</h3>
+                <ul>
+                    <li>1. 박학생</li>
+                    <li>2. 최학생</li>
+                    <li>3. 김학생</li>
+                </ul>
+            </div>
+            <div class="apply-section">
+                <button class="apply-button">강의 신청</button>
+            </div>
+        </div>
+    </div>
 </main>
+
 <script>
     const menuToggle = document.querySelector('.menu-toggle');
     const navMenu = document.querySelector('.nav-menu');
@@ -34,6 +75,42 @@
             navRight.classList.toggle('active');
         }
     });
+</script>
+<!-- 학생카드 슬라이드-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const reviewCards = document.querySelectorAll('.review-card');
+    let currentIndex = 0;
+
+    // 초기 카드 활성화
+    reviewCards[currentIndex].classList.add('active');
+
+    // 자동 슬라이드 함수
+    function slideCards() {
+        reviewCards[currentIndex].classList.remove('active');
+        currentIndex = (currentIndex + 1) % reviewCards.length;
+        reviewCards[currentIndex].classList.add('active');
+    }
+
+    // 3초마다 슬라이드
+    setInterval(slideCards, 3000);
+
+    // 마우스 휠 이벤트
+    document.querySelector('.card-slider').addEventListener('wheel', function(event) {
+        event.preventDefault();
+
+        reviewCards[currentIndex].classList.remove('active');
+
+        if (event.deltaY > 0) {
+            currentIndex = (currentIndex + 1) % reviewCards.length;
+        } else {
+            currentIndex = (currentIndex - 1 + reviewCards.length) % reviewCards.length;
+        }
+
+        reviewCards[currentIndex].classList.add('active');
+    });
+});
+
 </script>
 </body>
 </html>
