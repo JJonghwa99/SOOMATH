@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Main Page</title>
+    <title>SOO MATH</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://use.fontawesome.com/releases/v6.0.0/js/all.js"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/green_8logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/green_8logo.png">
     <link href="/css/nav.css" rel="stylesheet">
     <link href="/css/main.css" rel="stylesheet">
 </head>
@@ -22,13 +24,7 @@
                 <h3>선생님 소개</h3>
                 <p>이곳에 선생님의 약력이나 간단한 소개를 작성하세요.</p>
             </div>
-            <div class="timetable-section">
-                <h3>수업 시간표</h3>
-                <div class="timetable-card">
-                    <p>월요일: 10:00 - 12:00</p>
-                    <p>수요일: 14:00 - 16:00</p>
-                </div>
-            </div>
+
         </div>
 
         <!-- 오른쪽 영역 -->
@@ -49,17 +45,24 @@
                     </div>
                 </div>
             </div>
-            <div class="ranking-section">
-                <h3>학생 랭킹</h3>
-                <ul>
-                    <li>1. 박학생</li>
-                    <li>2. 최학생</li>
-                    <li>3. 김학생</li>
-                </ul>
+            <div class="timetable-section">
+                <h3>수업 시간표</h3>
+                <div class="timetable-card">
+                    <p>월요일: 10:00 - 12:00</p>
+                    <p>수요일: 14:00 - 16:00</p>
+                </div>
             </div>
             <div class="apply-section">
-                <button class="apply-button">강의 신청</button>
+                <button class="apply-button" onclick="window.open('https://russelyt.megastudy.net/russel/teacher/teacher_home.asp?code=1605')">수강 신청</button>
             </div>
+        </div>
+        <div class="ranking-section" sec:authorize="isAuthenticated() and hasAuthority('ROLE_STUDENT')" >
+            <h3>학생 랭킹</h3>
+            <ul>
+                <li>1. 박학생</li>
+                <li>2. 최학생</li>
+                <li>3. 김학생</li>
+            </ul>
         </div>
     </div>
 </main>

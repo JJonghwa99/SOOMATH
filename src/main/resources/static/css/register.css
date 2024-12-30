@@ -11,7 +11,7 @@ body, html {
     margin: 0;
     background-color: var(--beige);
     font-family: 'Pretendard', sans-serif;
-    overflow: hidden; /* 스크롤바 숨김 */
+    overflow: auto;
 }
 
 /* 중앙 배치 및 반응형 */
