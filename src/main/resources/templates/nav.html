@@ -1,0 +1,78 @@
+    <!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>NAV</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://unpkg.com/@lottiefiles/lottie-player@1.5.6"></script>
+        <script src="https://use.fontawesome.com/releases/v6.0.0/js/all.js"></script>
+    </head>
+
+    <header th:fragment="navbar" class="border-bottom">
+        <div class="nav-container">
+            <!-- 로고 및 왼쪽 메뉴 -->
+            <a href="/" class="d-flex align-items-center text-decoration-none nav-logo">
+                <img src="/img/8_logo.png" style="width: 50px; height: 42px" >
+                <span class="ms-2">Aleph MATH</span>
+
+                <ul class="nav nav-menu">
+                    <!-- 승인된 학생 -->
+                    <li class="nav-item" sec:authorize="isAuthenticated() and hasAuthority('ROLE_STUDENT')">
+                        <a href="/qna/page/1" class="nav-link"><i class="fas fa-q"></i>&nbsp;&nbsp;질문하기</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated() and hasAuthority('ROLE_STUDENT')">
+                        <a href="/exam/page/1" class="nav-link"><i class="fas fa-comment"></i>&nbsp;&nbsp;시험해설</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated() and hasAuthority('ROLE_STUDENT')">
+                        <a href="/score" class="nav-link"><i class="fas fa-square-poll-vertical"></i>&nbsp;&nbsp;성적차트</a>
+                    </li>
+
+                    <!-- 미승인 학생 -->
+                    <li class="nav-item" sec:authorize="isAuthenticated() and hasAuthority('ROLE_VISITOR')" style="pointer-events: none;">
+                        <span class="nav-link text-danger" style="font-size: 0.7em;">😰서비스 이용이 아직 불가합니다. 관리자 승인을 기다려주세요.🥹</span>
+                    </li>
+
+                    <!-- 관리자 -->
+                    <li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                        <a href="/qna/page/1" class="nav-link"><i class="fas fa-q"></i>&nbsp;&nbsp;질문답변</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                        <a href="/exam/page/1" class="nav-link"><i class="fas fa-comment"></i>&nbsp;&nbsp;시험해설</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                        <a href="/admin/score" class="nav-link"><i class="fas fa-square-poll-vertical"></i>&nbsp;&nbsp;성적관리</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                            <a href="/admin/members" class="nav-link"><i class="fas fa-user-pen"></i>&nbsp;&nbsp;학생관리</a>
+                    </li>
+                </ul>
+            </a>
+
+
+            <!-- 로그인 전 -->
+            <div class="nav-right1" sec:authorize="isAnonymous()">
+                <a href="/login" class="nav-link">로그인</a>
+            </div>
+
+            <!-- 공통 -->
+            <div class="nav-right2" sec:authorize="isAuthenticated()">
+                <div>
+                    <i class="fas fa-user"></i>
+                    <span th:text="${#authentication.principal.displayName}"></span>
+                </div>
+                <a href="/logout" class="nav-link">로그아웃</a>
+            </div>
+
+            <div class="menu-toggle d-lg-none" sec:authorize="isAuthenticated()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    </body>
+    </html>
+    <!--네비바 갖다 쓰는 html에 nav.css 불러줘야 스타일 입혀짐 -->

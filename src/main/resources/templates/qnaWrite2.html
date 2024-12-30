@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css">
+    <script src="https://use.fontawesome.com/releases/v6.0.0/js/all.js"></script>
+    <link href="/css/WriteEdit.css" rel="stylesheet">
+    <title>시험 질문하기</title>
+
+</head>
+<body>
+<article>
+    <div class="container" role="main">
+        <h2>시험 질문</h2>
+        <form name="form" id="form" role="form" method="post" action="/qna/write" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" name="title" id="title"
+                       th:value="${title}" placeholder="제목을 입력해 주세요" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label>내용</label>
+                <div class="main-container" id="content">
+                    <div class="editor-container editor-container_classic-editor editor-container_include-style" id="editor-container">
+                        <div class="editor-container__editor"><textarea id="editor" name="content"></textarea></div>
+                    </div>
+                </div>
+                <div class="form-check form-check-inline mt-3">
+                    <input class="form-check-input" type="checkbox" name="secret" id="secret">
+                    <label class="form-check-label"><i class="fas fa-lock"></i>&nbsp;&nbsp;비밀글</label>
+                </div>
+            </div>
+            <input type="hidden" name="content" id="contentHidden" />
+
+
+            <div>
+                <button type="submit" class="btn btn-sm btn-primary" id="btnSave"><i class="fas fa-save"></i>&nbsp;&nbsp;저장</button>
+                <a th:href="@{/qna/page/1}" class="btn btn-sm btn-secondary" id="btnList"><i class="fas fa-list"></i>&nbsp;&nbsp;목록</a>
+            </div>
+        </form>
+    </div>
+</article>
+
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.3.1/"
+        }
+    }
+</script>
+
+<script type="module" src="/main.js"></script>
+<script>
+    ClassicEditor
+    .create(document.querySelector('#editor'), {
+        extraPlugins: [MyCustomUploadAdapterPlugin],
+    })
+    .then(editor => {
+        document.querySelector('#form').addEventListener('submit', function () {
+            document.querySelector('#contentHidden').value = editor.getData();
+        });
+    })
+    .catch(error => {
+        console.error(error);
+    });
+</script>
+
+</body>
+</html>

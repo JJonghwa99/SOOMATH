@@ -1,0 +1,130 @@
+/* 페이지 전체 스타일 */
+body {
+    font-family: 'Pretendard', sans-serif;
+    background-color: var(--beige);
+}
+
+/* Main Container Styling */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding-top: 8vh;
+    background-color: #f5f5f5; /* Light background for entire page */
+}
+
+/* Rounded Container Styling */
+.container {
+    width: 90%;
+    max-width: 800px;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+/* Upload Section Styling */
+.upload-section {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.upload-section h3 {
+    color: var(--deep-green);
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.upload-section input[type="file"] {
+    background-color: var(--input-bg);
+    border: 1px solid var(--deep-green);
+    color: #333;
+    padding: 0.75rem;
+    border-radius: 5px;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: var(--deep-green);
+    color: var(--beige);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: var(--hover-green);
+}
+
+/* Member List Table Styling */
+.member-list h3 {
+    color: var(--deep-green);
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Table Styling */
+.table {
+    width: 100%;
+    margin-bottom: 2rem;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--deep-green);
+    vertical-align: middle;
+}
+
+.table th {
+    background-color: var(--deep-green);
+    color: var(--beige);
+    font-weight: bold;
+}
+
+.table td {
+    background-color: white;
+}
+
+/* Bold Text for Specific Cells */
+.bold-text {
+    font-weight: bold;
+}
+
+.bold-text {
+    font-weight: bold;
+}
+select {
+    padding: 0.5rem;
+    border: 1px solid var(--deep-green);
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: var(--deep-green);
+    font-weight: bold;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+select:hover {
+    border-color: var(--hover-green);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--hover-green);
+    box-shadow: 0 0 5px rgba(34, 139, 34, 0.5); /* Focus 효과 */
+}

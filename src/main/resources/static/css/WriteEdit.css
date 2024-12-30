@@ -1,0 +1,96 @@
+/* 기본 스타일 */
+body {
+    padding-top: 70px;
+    padding-bottom: 30px;
+    font-family: 'Pretendard', sans-serif;
+    background-color: #f5f5dc;
+    color: #333333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    color: #006400;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 600;
+    color: #006400;
+}
+
+/* CKEditor 영역 */
+.ck-editor__editable {
+    height: 400px;
+    font-size: 20px;
+    border-radius: 5px;
+    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 버튼 스타일 */
+.btn-primary {
+    background-color: #006400;
+    border-color: #006400;
+    font-size: 0.9rem;
+    padding: 8px 20px;
+    border-radius: 5px;
+}
+
+.btn-primary:hover {
+    background-color: #228b22;
+    border-color: #228b22;
+}
+
+.btn-secondary {
+    font-size: 0.9rem;
+    padding: 8px 20px;
+    border-radius: 5px;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .ck-editor__editable {
+        height: 300px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    /* 제목 입력란 */
+    #title {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+
+    label {
+        font-size: 0.9rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        font-size: 0.8rem;
+        padding: 10px;
+    }
+}

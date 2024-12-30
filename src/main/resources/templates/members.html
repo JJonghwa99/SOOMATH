@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Members</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v6.0.0/js/all.js"></script>
+    <link href="/css/nav.css" rel="stylesheet">
+    <link href="/css/members.css" rel="stylesheet">
+</head>
+<body>
+<!-- 네비게이션 바 포함 -->
+<div th:replace="~{nav :: navbar}"></div>
+
+<main>
+    <h1>미승인 회원 목록</h1>
+    <table border="1">
+        <tr>
+            <th>가입순번</th>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>학교</th>
+            <th>학년</th>
+            <th></th>
+        </tr>
+        <tr th:each="tempMember : ${tempMembers}">
+            <td th:text="${tempMember.id}">가입순번</td>
+            <td th:text="${tempMember.username}">아이디</td>
+            <td th:text="${tempMember.displayName}" class="bold-text">이름</td>
+            <td th:text="${tempMember.schoolName}" class="bold-text">학교</td>
+            <td th:text="${tempMember.grade}" class="bold-text">학년</td>
+            <td>
+                <button class="approve" onclick="approveMember(this)" th:attr="data-id=${tempMember.id}">승인</button>
+                <button class="reject" onclick="rejectMember(this)" th:attr="data-id=${tempMember.id}">거절</button>
+            </td>
+        </tr>
+    </table>
+
+    <h1>승인 회원 목록</h1>
+    <table border="1">
+        <tr>
+            <th>가입순번</th>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>
+                <select id="schoolFilter" onchange="filterMembers()">
+                    <option value="">전체</option>
+                    <option value="흥덕고">흥덕고</option>
+                    <option value="태장고">태장고</option>
+                    <option value="청명고">청명고</option>
+                    <option value="영덕고">영덕고</option>
+                    <option value="서천고">서천고</option>
+                    <option value="망포고">망포고</option>
+                </select>
+                학교
+            </th>
+            <th>
+                <select id="gradeFilter" onchange="filterMembers()">
+                    <option value="">전체</option>
+                    <option value="1">1학년</option>
+                    <option value="2">2학년</option>
+                    <option value="3">3학년</option>
+                </select>
+                학년
+            </th>
+            <th></th>
+        </tr>
+        <tr th:each="member : ${members}">
+            <td th:text="${member.id}">가입순번</td>
+            <td th:text="${member.username}">아이디</td>
+            <td th:text="${member.displayName}" class="bold-text">이름</td>
+            <td>
+                <input type="text" th:value="${member.schoolName}" class="school-input" readonly />
+                <button class="edit-btn approve" type="button" onclick="enableEdit(this, 'school-input')">
+                    <i class="fas fa-user-edit"></i>
+                </button>
+            </td>
+            <td>
+                <input type="number" th:value="${member.grade}" class="grade-input" min="1" max="3" readonly />
+                <button class="edit-btn approve" type="button" onclick="enableEdit(this, 'grade-input')">
+                    <i class="fas fa-user-edit"></i>
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-primary" onclick="updateMember(this)" th:attr="data-id=${member.id}">
+                    <i class="fas fa-save"></i>
+                </button>
+                <button class="btn btn-danger" onclick="deleteMember(this)" th:attr="data-id=${member.id}">
+                    <i class="fas fa-user-slash"></i>
+                </button>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        function approveMember(button) {
+            const id = button.getAttribute('data-id');
+            fetch(`/admin/approve?id=${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("✅승인 완료");
+                    location.reload();
+                } else {
+                    alert("😰승인 처리 중 오류가 발생했습니다❗");
+                }
+            });
+        }
+
+        function rejectMember(button) {
+            const id = button.getAttribute('data-id');
+            fetch(`/admin/reject?id=${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("✅회원가입을 거절 하였습니다.");
+                    location.reload();
+                } else {
+                    alert("😰거절 처리 중 오류가 발생했습니다❗");
+                }
+            });
+        }
+
+        function updateMember(button) {
+            const id = button.getAttribute('data-id');
+            const row = button.closest('tr');
+            const school = row.querySelector('.school-input');
+            const grade = row.querySelector('.grade-input');
+
+            fetch(`/admin/updateMember`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, schoolName: school.value, grade: grade.value })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("✅회원 정보가 수정되었습니다.");
+                    school.readOnly = true;
+                    grade.readOnly = true;
+                    school.classList.remove("editable");
+                    grade.classList.remove("editable");
+                } else {
+                    alert("😰수정 처리 중 오류가 발생했습니다❗");
+                }
+            });
+        }
+
+        function deleteMember(button) {
+            const id = button.getAttribute('data-id');
+            fetch(`/admin/deleteMember?id=${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("✅회원이 삭제되었습니다.");
+                    location.reload(); // 삭제 후 새로고침
+                } else {
+                    alert("😰삭제 처리 중 오류가 발생했습니다❗");
+                }
+            });
+        }
+
+        function enableEdit(button, inputClass) {
+            const input = button.parentNode.querySelector(`.${inputClass}`);
+            input.readOnly = false;
+            input.classList.add("editable");
+            input.focus();
+        }
+
+        function filterMembers() {
+    const gradeFilter = document.getElementById("gradeFilter").value;
+    const schoolFilter = document.getElementById("schoolFilter").value;
+    const rows = document.querySelectorAll("table tr");
+
+    rows.forEach((row, index) => {
+        if (index === 0) return; // 첫 번째 행은 헤더이므로 제외
+
+        const gradeInput = row.querySelector(".grade-input");
+        const schoolInput = row.querySelector(".school-input");
+
+        const grade = gradeInput ? gradeInput.value : "";
+        const school = schoolInput ? schoolInput.value : "";
+
+        // 필터링 조건
+        const gradeMatch = gradeFilter === "" || grade.toString() === gradeFilter;
+        const schoolMatch = schoolFilter === "" || school === schoolFilter;
+
+        // 필터 칸의 행은 항상 표시
+        const isFilterRow = row.querySelector("th"); // 각 행이 헤더인지 확인
+        row.style.display = (isFilterRow || (gradeMatch && schoolMatch)) ? "" : "none";
+    });
+}
+
+    </script>
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        const navRight = document.querySelector('.nav-right2');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            if (navRight) {
+                navRight.classList.toggle('active');
+            }
+        });
+    </script>
+</main>
+</body>
+</html>

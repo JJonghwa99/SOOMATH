@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>글 상세보기</title>
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/detail.css" rel="stylesheet">
+    <script src="https://use.fontawesome.com/releases/v6.0.0/js/all.js"></script>
+<body>
+<main>
+    <h1 th:text="${post.title}">제목</h1>
+    <p>작성자: <span th:text="${post.writer}">작성자</span></p>
+    <p>작성일: <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</span></p>
+    <hr>
+    <div th:utext="${post.content}">내용</div>
+    <hr>
+
+    <!-- 수정 및 삭제 버튼 -->
+    <div class="button-container">
+        <div class="left-buttons">
+            <div class="admin-buttons"
+                 sec:authorize="hasAuthority('ROLE_ADMIN') or #authentication.principal.username == #vars.post.username">
+                <a th:href="@{/qna/edit/{id}(id=${post.id})}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i>&nbsp;&nbsp;수정
+                </a>
+                <form th:action="@{/qna/delete/{id}(id=${post.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i>&nbsp;&nbsp;삭제
+                    </button>
+                </form>
+            </div>
+            <a th:href="@{/qna/page/1}" class="btn btn-primary"><i class="fas fa-list"></i>&nbsp;&nbsp;목록</a>
+        </div>
+        <div class="right-buttons"
+             sec:authorize="hasAuthority('ROLE_ADMIN') or
+                    #authentication.principal.username == #vars.post.username or
+                    (#vars.post.parent != null and #authentication.principal.username == #vars.post.parent.username)">
+            <a th:href="@{/qna/write/answer/{id}(id=${post.id})}" class="btn btn-primary">
+                <i class="fas fa-comment-alt"></i>&nbsp;&nbsp;답글달기
+            </a>
+        </div>
+    </div>
+    <!--요놈은 그 작성 html에 제목을 고정하도록 함-->
+</main>
+<script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    const navRight = document.querySelector('.nav-right2');
+
+    menuToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        if (navRight) {
+            navRight.classList.toggle('active');
+        }
+    });
+</script>
+</body>
+</html>

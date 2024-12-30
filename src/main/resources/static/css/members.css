@@ -1,0 +1,128 @@
+:root {
+    --beige: #f5f5dc;
+    --deep-green: #006400;
+    --hover-green: #228b22;
+    --reject-pink: #f0768b;
+    --reject-pink2: #ffc0cb;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    background-color: var(--beige);
+    font-family: 'Pretendard', sans-serif;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding-top: 4vh;
+}
+
+table {
+    width: 80%;
+    margin-bottom: 2rem;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--deep-green);
+    vertical-align: middle;
+}
+
+.bold-text {
+    font-weight: bold;
+}
+
+th {
+    background-color: var(--deep-green);
+    color: var(--beige);
+}
+
+button {
+    color: var(--beige);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.approve {
+    background-color: var(--deep-green);
+}
+
+button.reject {
+    background-color: var(--reject-pink);
+}
+
+button.reject:hover {
+    background-color: var(--reject-pink2);
+}
+
+button:hover {
+    background-color: var(--hover-green);
+}
+
+.edit-btn {
+    margin-left: 5px;
+}
+
+h1 {
+    color: var(--deep-green);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+h1:first-of-type {
+    color: #cc0000;
+}
+
+h1:last-of-type {
+    color: var(--deep-green);
+    margin-top: 1rem;
+}
+
+.school-input,
+.grade-input {
+    background-color: #ffffff;
+    border: none;
+    text-align: center;
+    width: 100px;
+    font-weight: bold;
+}
+
+.editable {
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+select {
+    padding: 0.5rem;
+    border: 1px solid var(--deep-green);
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: var(--deep-green);
+    font-weight: bold;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+select:hover {
+    border-color: var(--hover-green);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--hover-green);
+    box-shadow: 0 0 5px rgba(34, 139, 34, 0.5); /* Focus 효과 */
+}

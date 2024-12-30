@@ -1,0 +1,197 @@
+/* Pretendard 폰트 가져오기 */
+@import url('https://fonts.googleapis.com/css2?family=Pretendard&display=swap');
+
+/* 전체 글씨체 설정 */
+body {
+    font-family: 'Pretendard', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* 베이지와 딥그린 색상 조합 */
+:root {
+    --beige: #f5f5dc;
+    --deep-green: #006400;
+    --hover-green: #228b22;
+    --text-color: #333333;
+}
+
+/* 네비게이션 바 기본 설정 */
+.nav-container {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: var(--beige);
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 로고 및 텍스트 */
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--deep-green);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    z-index: 2;
+}
+
+.nav-logo:hover {
+    color: var(--hover-green);
+}
+
+/* 메뉴 스타일 */
+.nav-menu {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-left: 20px;
+}
+
+/* 메뉴 아이템 */
+.nav-item .nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+/* 메뉴 아이템 호버 효과 */
+.nav-item .nav-link:hover {
+    color: var(--deep-green);
+    transform: translateY(-2px);
+    background-color: rgba(34, 139, 34, 0.1);
+}
+
+/* 오른쪽 영역 스타일 */
+.nav-right1 {
+    margin-left: auto;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* 로그인/로그아웃 버튼 */
+.nav-right1 .nav-link {
+    padding: 8px 20px;
+    border-radius: 5px;
+    background-color: var(--deep-green);
+    color: var(--beige);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.nav-right1 .nav-link:hover {
+    background-color: var(--hover-green);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.nav-right2 {
+    margin-left: auto;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* 로그인/로그아웃 버튼 */
+.nav-right2 .nav-link {
+    padding: 8px 20px;
+    border-radius: 5px;
+    background-color: var(--deep-green);
+    color: var(--beige);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.nav-right2 .nav-link:hover {
+    background-color: var(--hover-green);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* 햄버거 메뉴 버튼 */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background-color: var(--deep-green);
+    transition: all 0.3s ease-in-out;
+}
+
+/* 모바일 반응형 스타일 */
+@media (max-width: 768px) {
+.nav-container {
+    display: flex;
+    align-items: center;
+    background-color: var(--beige);
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+    .menu-toggle {
+        display: flex;
+        margin-left: auto;
+    }
+    .nav-right {
+            display: flex; /* 항상 보이도록 설정 */
+        }
+        .nav-right.active {
+            flex-direction: column; /* 모바일에서 버튼 정렬 */
+            gap: 10px;
+        }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 50%;
+        height: 100vh;
+        background-color: var(--beige);
+        flex-direction: column;
+        padding-top: 60px;
+        transition: 0.3s ease-in-out;
+        margin: 0;
+        box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    }
+
+    .nav-menu.active {
+        right: 0;
+    }
+
+    /* 로고 크기 조정 */
+    .nav-logo {
+        font-size: 1.2rem; /* 텍스트 크기 축소 */
+        gap: 5px;
+    }
+    .nav-logo img {
+        width: 40px; /* 이미지 크기 축소 */
+        height: 34px;
+    }
+
+    /* 로그아웃 옵션 */
+    .nav-right2 {
+        display: none;
+    }
+    .nav-right2.active {
+        display: flex;
+        position: fixed;
+        bottom: 20px;
+        right: 10px;
+        width: auto;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
