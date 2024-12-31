@@ -93,6 +93,20 @@ body {
     opacity: 1;
     transform: translateY(0);
 }
+.profile-image {
+  width: 350px;
+  height: 525.13px;
+  object-fit: cover;
+}
+
+@media screen and (max-width: 768px) {
+  .profile-image {
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 350 / 525.13;
+  }
+}
+
 
 .apply-button {
     width: 100%;
