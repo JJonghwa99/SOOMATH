@@ -54,15 +54,27 @@ body {
     flex-direction: column;
     gap: 20px;
 }
+.student-section{
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-.profile-card, .timetable-card, .review-container, .ranking-section {
+.profile-card, .timetable-card, .review-container, .ranking-section{
     background-color: var(--card-bg);
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     height: auto;
 }
-
+.notice-section{
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: auto;
+}
 
 .card-slider {
     position: relative;

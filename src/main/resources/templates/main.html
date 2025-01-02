@@ -346,22 +346,28 @@
                     </div>
                 </div>
             </div>
-            <div class="timetable-section">
-                <h3>수업 시간표</h3>
-                <div class="timetable-card">
-                    <p>월요일: 10:00 - 12:00</p>
-                    <p>수요일: 14:00 - 16:00</p>
+            <div class="timetable-section" style="text-align: center; width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <div class="timetable-section">
+                <a href="/img/timetable.png" target="_blank">
+                    <img src="/img/timetable.png" alt="수업 시간표" style="width: 100%; max-width:7000px;">
+                </a>
                 </div>
             </div>
+
             <button class="apply-button" type="button" onclick="window.open('https://russelyt.megastudy.net/russel/teacher/teacher_home.asp?code=1605')">수강 신청</button>
         </div>
-        <div class="ranking-section" sec:authorize="isAuthenticated() and hasAuthority('ROLE_STUDENT')" >
+        <div class="student-section" sec:authorize="isAuthenticated() and hasAuthority('ROLE_STUDENT')">
+        <div class="notice-section">
+            <h3 tyle="text-align: center;">❗⚠️공지사항⚠️❗</h3>
+        </div>
+        <div class="ranking-section">
             <h3>학생 랭킹</h3>
             <ul>
                 <li>1. 박학생</li>
                 <li>2. 최학생</li>
                 <li>3. 김학생</li>
             </ul>
+        </div>
         </div>
     </div>
 </main>
