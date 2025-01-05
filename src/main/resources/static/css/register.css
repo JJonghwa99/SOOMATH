@@ -48,6 +48,16 @@ main {
     padding: 0.75rem;
     border-radius: 5px;
 }
+/* 기본 select 컨테이너 스타일 */
+.selectpicker {
+    background-color: #f2f2e9;
+    border: 1px solid var(--deep-green);
+    color: #333;
+    padding: 0.75rem;
+    border-radius: 5px;
+    font-size: 14px; /* 글자 크기 */
+}
+
 
 .show-password1, .show-password2 {
     cursor: pointer;

@@ -36,6 +36,8 @@ public class MemberController {
     @ResponseBody
     public String addMember(@RequestParam String username,
                             @RequestParam String displayName,
+                            @RequestParam String nickName,
+                            @RequestParam List<String> separated,
                             @RequestParam String schoolName,
                             @RequestParam int grade,
                             @RequestParam String password,
@@ -53,6 +55,8 @@ public class MemberController {
             TempMember tempMember = new TempMember();
             tempMember.setUsername(username);
             tempMember.setDisplayName(displayName);
+            tempMember.setNickName(nickName);
+            tempMember.setSeparated(separated);
             tempMember.setSchoolName(schoolName);
             tempMember.setGrade(grade);
             tempMember.setAuth(auth);
