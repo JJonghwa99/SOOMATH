@@ -50,17 +50,14 @@
                         </div>
                         <div class="box-margin1">
                             <label>수강강좌</label>
-                            <select id="separated-select" class="form-control selectpicker" name="separated[]" multiple data-live-search="true" data-actions-box="true" placeholder="수강하는 강좌를 선택해주세요.(다중선택 가능)">
-                                <option value="중3 심화">중3 심화</option>
-                                <option value="공수 기본">공수 기본</option>
-                                <option value="공수 심화">공수 심화</option>
-                                <option value="미적분">미적분</option>
-                                <option value="수1 기본">수1 기본</option>
-                                <option value="수1 심화">수1 심화</option>
-                                <option value="수2">수2</option>
-                                <option value="확통">확통</option>
+                            <select id="separated-select" class="form-control selectpicker" name="separated[]" multiple data-actions-box="true" placeholder="수강하는 강좌를 선택해주세요.(다중선택 가능)">
+                                <option th:each="course : ${courses}"
+                                        th:value="${course.sCode}"
+                                        th:text="${course.sName}">
+                                </option>
                             </select>
                         </div>
+
                         <div class="box-margin1">
                             <label>학년</label>
                             <select class="form-control" name="grade" required>

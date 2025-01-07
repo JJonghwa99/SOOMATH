@@ -15,15 +15,21 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
+
     @Autowired
     private PasswordEncoder passwordEncoder;
     private final TempMemberRepository tempMemberRepository;
     private final MemberRepository memberRepository;
+    private final SeparatedRepository SeparatedRepository;
     @Autowired
     private MyUserDetailsService myuserDetailsService;
 
     @GetMapping("/register")
-    public String register() {
+    public String register(Model model) {
+        List<Separated> courses = SeparatedRepository.findAll();
+
+        model.addAttribute("courses", courses);
+
         return "register.html";
     }
 
