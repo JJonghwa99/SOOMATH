@@ -65,6 +65,7 @@ public class MyUserDetailsService implements UserDetailsService {
                         tempMember.getUsername(),
                         tempMember.getDisplayName(),
                         tempMember.getSchoolName(),
+                        tempMember.getSeparated(),
                         tempMember.getGrade(),
                         tempMember.isAuth()))
                 .collect(Collectors.toList());
@@ -73,6 +74,8 @@ public class MyUserDetailsService implements UserDetailsService {
     @Getter
     @Setter
     public class TempMemberDTO {
+        private final List<String> separated;
+        private List<String> separatedNames;
         private Long id;
         private String username;
         private String displayName;
@@ -81,13 +84,14 @@ public class MyUserDetailsService implements UserDetailsService {
         private boolean auth;
 
         // 생성자
-        public TempMemberDTO(Long id, String username, String displayName, String schoolName, int grade, boolean auth) {
+        public TempMemberDTO(Long id, String username, String displayName, String schoolName, List<String> separated, int grade, boolean auth) {
             this.id = id;
             this.username = username;
             this.displayName = displayName;
             this.schoolName = schoolName;
             this.grade = grade;
             this.auth = auth;
+            this.separated = separated;
         }
     }
 
@@ -102,31 +106,36 @@ public class MyUserDetailsService implements UserDetailsService {
                             member.getDisplayName(),
                             member.getSchoolName(),
                             member.getGrade(),
+                            member.getSeparated(),
                             member.isAuth()))
                     .collect(Collectors.toList());
         }
 
 
-        @Getter
-        @Setter
-        public class MemberDTO {
-            private Long id;
-            private String username;
-            private String displayName;
-            private String schoolName;
-            private int grade;
-            private boolean auth;
+    @Getter
+    @Setter
+    public class MemberDTO {
+        private final List<String> separated; // 분반 코드 리스트
+        private List<String> separatedNames; // 분반 이름 리스트
+        private Long id;
+        private String username;
+        private String displayName;
+        private String schoolName;
+        private int grade;
+        private boolean auth;
 
-            // 생성자
-            public MemberDTO(Long id, String username, String displayName, String schoolName, int grade, boolean auth) {
-                this.id = id;
-                this.username = username;
-                this.displayName = displayName;
-                this.schoolName = schoolName;
-                this.grade = grade;
-                this.auth = auth;
-            }
+        // 생성자
+        public MemberDTO(Long id, String username, String displayName, String schoolName, int grade, List<String> separated, boolean auth) {
+            this.id = id;
+            this.username = username;
+            this.displayName = displayName;
+            this.schoolName = schoolName;
+            this.grade = grade;
+            this.separated = separated;
+            this.auth = auth;
         }
+    }
+
     public boolean isAdmin(String username) {
         return ADMIN_IDS.contains(username);
     }

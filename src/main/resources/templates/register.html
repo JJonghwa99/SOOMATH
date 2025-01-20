@@ -50,12 +50,12 @@
                         </div>
                         <div class="box-margin1">
                             <label>수강강좌</label>
-                            <select id="separated-select" class="form-control selectpicker" name="separated[]" multiple data-actions-box="true" placeholder="수강하는 강좌를 선택해주세요.(다중선택 가능)">
-                                <option th:each="course : ${courses}"
-                                        th:value="${course.sCode}"
-                                        th:text="${course.sName}">
-                                </option>
-                            </select>
+                                <select id="separated-select" class="form-control selectpicker" name="separated[]" multiple data-actions-box="true" placeholder="수강하는 강좌를 선택해주세요.(다중선택 가능)">
+                                    <option th:each="course : ${courses}"
+                                            th:value="${course.sCode}"
+                                            th:text="${course.sName}">
+                                    </option>
+                                </select>
                         </div>
 
                         <div class="box-margin1">
@@ -101,109 +101,109 @@
 
     <script>
         function check_up() {
-const username = document.querySelector('input[name="username"]');
-const displayName = document.querySelector('input[name="displayName"]');
-const schoolName = document.querySelector('select[name="schoolName"]');
-const grade = document.querySelector('select[name="grade"]');
-const separated = document.querySelector('select[name="separated[]"]');
-const pw1 = document.getElementById('pw1');
-const pw2 = document.getElementById('pw2');
-const pw1Value = pw1.value;
-const pw2Value = pw2.value;
+            const username = document.querySelector('input[name="username"]');
+            const displayName = document.querySelector('input[name="displayName"]');
+            const schoolName = document.querySelector('select[name="schoolName"]');
+            const grade = document.querySelector('select[name="grade"]');
+            const separated = document.querySelector('select[name="separated[]"]');
+            const pw1 = document.getElementById('pw1');
+            const pw2 = document.getElementById('pw2');
+            const pw1Value = pw1.value;
+            const pw2Value = pw2.value;
 
-// 아이디 체크
-if (!username.value.trim()) {
-    $('#error-message').text('😢 아이디를 입력해주세요.');
-    username.focus();
-    return false;
-}
+            // 아이디 체크
+            if (!username.value.trim()) {
+                $('#error-message').text('😢 아이디를 입력해주세요.');
+                username.focus();
+                return false;
+            }
 
-// 이름 체크
-if (!displayName.value.trim()) {
-    $('#error-message').text('😢 이름을 입력해주세요.');
-    displayName.focus();
-    return false;
-}
+            // 이름 체크
+            if (!displayName.value.trim()) {
+                $('#error-message').text('😢 이름을 입력해주세요.');
+                displayName.focus();
+                return false;
+            }
 
-// 학교 선택 체크
-if (!schoolName.value) {
-    $('#error-message').text('😢 학교를 선택해주세요.');
-    schoolName.focus();
-    return false;
-}
+            // 학교 선택 체크
+            if (!schoolName.value) {
+                $('#error-message').text('😢 학교를 선택해주세요.');
+                schoolName.focus();
+                return false;
+            }
 
-// 학년 선택 체크
-if (!grade.value) {
-    $('#error-message').text('😢 학년을 선택해주세요.');
-    grade.focus();
-    return false;
-}
+            // 학년 선택 체크
+            if (!grade.value) {
+                $('#error-message').text('😢 학년을 선택해주세요.');
+                grade.focus();
+                return false;
+            }
 
-// 수강과목 선택 체크
-if (!Array.from(separated.selectedOptions).length) {
-    $('#error-message').text('😢 수강과목을 선택해주세요.');
-    separated.focus();
-    return false;
-}
+            // 수강과목 선택 체크
+            if (!Array.from(separated.selectedOptions).length) {
+                $('#error-message').text('😢 수강과목을 선택해주세요.');
+                separated.focus();
+                return false;
+            }
 
-// 비밀번호 체크
-if (!pw1Value) {
-    $('#error-message').text('😢 비밀번호를 입력해주세요.');
-    pw1.focus();
-    return false;
-}
+            // 비밀번호 체크
+            if (!pw1Value) {
+                $('#error-message').text('😢 비밀번호를 입력해주세요.');
+                pw1.focus();
+                return false;
+            }
 
-if (pw1Value !== pw2Value) {
-    $('#error-message').text('😢 비밀번호가 일치하지 않습니다.');
-    pw1.focus();
-    return false;
-}
+            if (pw1Value !== pw2Value) {
+                $('#error-message').text('😢 비밀번호가 일치하지 않습니다.');
+                pw1.focus();
+                return false;
+            }
 
-return true;
-}
+            return true;
+            }
 
-$(document).ready(function () {
-    $('#register-form').submit(function (event) {
-        event.preventDefault(); // 폼 기본 제출을 막음
+            $(document).ready(function () {
+                $('#register-form').submit(function (event) {
+                    event.preventDefault(); // 폼 기본 제출을 막음
 
-        // 닉네임이 비어 있을 경우 자동 설정
-        const nickNameInput = document.querySelector('input[name="nickName"]');
-        const displayNameInput = document.querySelector('input[name="displayName"]');
-        if (!nickNameInput.value.trim()) {
-            nickNameInput.value = displayNameInput.value.trim();
-        }
-
-        if (check_up()) { // 모든 검증 통과 시에만 AJAX 요청 실행
-            $.ajax({
-                url: '/tempMember',
-                type: 'POST',
-                data: {
-                    username: $('input[name="username"]').val(),
-                    displayName: $('input[name="displayName"]').val(),
-                    nickName: $('input[name="nickName"]').val(), // 닉네임 추가
-                    schoolName: $('select[name="schoolName"]').val(),
-                    grade: $('select[name="grade"]').val(),
-                    separated: $('select[name="separated[]"]').val(), // 수강과목 추가
-                    password: $('#pw1').val(),
-                },
-                success: function (response) {
-                    if (response === "success") {
-                        window.location.href = '/success';
-                    } else if (response === "error1") {
-                        $('#error-message').text('😰이미 가입된 아이디입니다!❌');
-                    } else if (response === "error2") {
-                        $('#error-message').text('😰비밀번호가 너무 짧아요.');
-                    } else {
-                        $('#error-message').text('😰회원가입에 실패했어요.');
+                    // 닉네임이 비어 있을 경우 자동 설정
+                    const nickNameInput = document.querySelector('input[name="nickName"]');
+                    const displayNameInput = document.querySelector('input[name="displayName"]');
+                    if (!nickNameInput.value.trim()) {
+                        nickNameInput.value = displayNameInput.value.trim();
                     }
-                },
-                error: function () {
-                    $('#error-message').text('😰회원가입에 실패했어요.');
-                }
+
+                    if (check_up()) { // 모든 검증 통과 시에만 AJAX 요청 실행
+                        $.ajax({
+                            url: '/tempMember',
+                            type: 'POST',
+                            data: {
+                                username: $('input[name="username"]').val(),
+                                displayName: $('input[name="displayName"]').val(),
+                                nickName: $('input[name="nickName"]').val(), // 닉네임 추가
+                                schoolName: $('select[name="schoolName"]').val(),
+                                grade: $('select[name="grade"]').val(),
+                                separated: $('select[name="separated[]"]').val(), // 수강과목 추가
+                                password: $('#pw1').val(),
+                            },
+                            success: function (response) {
+                                if (response === "success") {
+                                    window.location.href = '/success';
+                                } else if (response === "error1") {
+                                    $('#error-message').text('😰이미 가입된 아이디입니다!❌');
+                                } else if (response === "error2") {
+                                    $('#error-message').text('😰비밀번호가 너무 짧아요.');
+                                } else {
+                                    $('#error-message').text('😰회원가입에 실패했어요.');
+                                }
+                            },
+                            error: function () {
+                                $('#error-message').text('😰회원가입에 실패했어요.');
+                            }
+                        });
+                    }
+                });
             });
-        }
-    });
-});
 
 
 

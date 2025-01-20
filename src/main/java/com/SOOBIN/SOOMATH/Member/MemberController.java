@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -80,15 +82,56 @@ public class MemberController {
     }
     @GetMapping("/admin/members")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String adminMember(Model model){
+    public String adminMember(Model model) {
         List<MyUserDetailsService.TempMemberDTO> tempMembers = myuserDetailsService.getAllTempMembers();
         List<MyUserDetailsService.MemberDTO> members = myuserDetailsService.getAllMembers();
 
+        // 모든 tempMembers의 separated 필드를 하나의 리스트로 병합
+        List<String> allSCodes2 = tempMembers.stream()
+                .flatMap(member -> member.getSeparated().stream())
+                .distinct() // 중복 제거
+                .collect(Collectors.toList());
+
+        // 병합된 sCode 리스트를 기준으로 sName 조회
+        Map<String, String> sCodeToSNameMap2 = SeparatedRepository.findBySCodeIn(allSCodes2).stream()
+                .collect(Collectors.toMap(Separated::getSCode, Separated::getSName));
+
+        // 각 멤버의 분반 이름 매핑 추가
+        tempMembers.forEach(member -> {
+            List<String> tempMemberSeparatedNames = member.getSeparated().stream()
+                    .map(sCodeToSNameMap2::get)
+                    .collect(Collectors.toList());
+            member.setSeparatedNames(tempMemberSeparatedNames);
+        });
+
+        // 모든 members의 separated 필드를 하나의 리스트로 병합
+        List<String> allSCodes1 = members.stream()
+                .flatMap(member -> member.getSeparated().stream())
+                .distinct() // 중복 제거
+                .collect(Collectors.toList());
+
+        // 병합된 sCode 리스트를 기준으로 sName 조회
+        Map<String, String> sCodeToSNameMap = SeparatedRepository.findBySCodeIn(allSCodes1).stream()
+                .collect(Collectors.toMap(Separated::getSCode, Separated::getSName));
+
+        // 각 멤버의 분반 이름 매핑 추가
+        members.forEach(member -> {
+            List<String> memberSeparatedNames = member.getSeparated().stream()
+                    .map(sCodeToSNameMap::get)
+                    .collect(Collectors.toList());
+            member.setSeparatedNames(memberSeparatedNames);
+        });
+
+        List<Separated> courses = SeparatedRepository.findAll();
+
+        model.addAttribute("courses", courses);
         model.addAttribute("tempMembers", tempMembers);
         model.addAttribute("members", members);
 
         return "members";
     }
+
+
     // 승인 메서드
     @Transactional
     @PostMapping("/admin/approve")
@@ -130,6 +173,7 @@ public class MemberController {
             memberRepository.findById(member.getId()).ifPresent(existingMember -> {
                 existingMember.setSchoolName(member.getSchoolName());
                 existingMember.setGrade(member.getGrade());
+                existingMember.setSeparated(member.getSeparated());
                 memberRepository.save(existingMember);
             });
             return "updated";
