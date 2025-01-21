@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class StudentScoreController {
@@ -80,13 +82,18 @@ public class StudentScoreController {
         model.addAttribute("displayName", member.getDisplayName());
 
 
-        System.out.println(sCodeToSMonth);
-
-        // 성적 통계 데이터를 가져와 모델에 추가
-        Map<String, Object> scoreData = scoreService.getStudentScores(username);
-        model.addAllAttributes(scoreData);
-
         return "sview";
+    }
+
+    @GetMapping("/score/chart")
+    @ResponseBody
+    public Map<String, Object> getChartData(@RequestParam String code, @RequestParam String month) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // `code`와 `month`에 맞는 데이터 가져오기
+        Map<String, Object> chartData = scoreService.getScoresByCodeAndMonth(username, code, month);
+        return chartData;
     }
 }
 

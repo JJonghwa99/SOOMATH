@@ -11,6 +11,8 @@ import java.util.List;
 public interface ScoreRepository extends JpaRepository<Score, Long> {
     List<Score> findByMemberUsername(String username);
     List<Score> findByMonthAndSeparated(String month, String separated);
+    List<Score> findByMemberUsernameAndSeparatedAndMonth(String username, String separated, String month);
+
 
 
 

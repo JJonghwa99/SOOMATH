@@ -33,11 +33,18 @@ public class ScoreService {
 
             // 줄이 학년/반/월 정보로 시작하는지 확인
             if (data[0].matches("\\d+-\\d+\\(\\d+\\)")) {
-                exams = Arrays.copyOfRange(data, 1, data.length);  // 주차/회차 정보 저장
+                exams = Arrays.stream(data, 1, data.length)
+                        .filter(s -> !s.trim().isEmpty()) // 빈 문자열 제거
+                        .toArray(String[]::new);
+                if (exams.length == 0) {
+                    System.out.println("No exam information found: " + line);
+                    continue;
+                }
                 separated = data[0].substring(0, data[0].indexOf('('));
-                month = data[0].substring(data[0].indexOf('(') + 1, data[0].indexOf(')'));  // 월 추출
-                continue;  // 다음 줄로 넘어감
+                month = data[0].substring(data[0].indexOf('(') + 1, data[0].indexOf(')'));
+                continue;
             }
+
 
             // 실제 성적 데이터를 처리
             String username = data[0];
@@ -63,6 +70,7 @@ public class ScoreService {
             }
         }
     }
+
     public Map<String, Object> getStudentScores(String username) {
         // 현재 학생의 점수 데이터 가져오기
         List<Score> studentScores = scoreRepository.findByMemberUsername(username);
@@ -129,5 +137,51 @@ public class ScoreService {
 
         return result;
     }
+
+    public Map<String, Object> getScoresByCodeAndMonth(String username, String code, String month) {
+        // 현재 학생의 점수 데이터 가져오기
+        List<Score> studentScores = scoreRepository.findByMemberUsernameAndSeparatedAndMonth(username, code, month);
+
+        if (studentScores.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        // 시험별로 점수 분류
+        Map<String, List<Integer>> examScoresMap = new TreeMap<>();
+        Map<String, Integer> currentStudentScoresMap = new TreeMap<>();
+
+        for (Score score : studentScores) {
+            String exam = score.getExam();
+            examScoresMap.computeIfAbsent(exam, k -> new ArrayList<>()).add(score.getScore());
+
+            // 현재 학생의 점수 따로 저장
+            currentStudentScoresMap.put(exam, score.getScore());
+        }
+
+        // 결과 데이터 준비
+        List<String> labels = new ArrayList<>(examScoresMap.keySet());
+        List<Integer> minScores = new ArrayList<>();
+        List<Integer> avgScores = new ArrayList<>();
+        List<Integer> maxScores = new ArrayList<>();
+        List<Integer> studentScoresList = new ArrayList<>();
+
+        for (String exam : labels) {
+            List<Integer> scores = examScoresMap.get(exam);
+            minScores.add(Collections.min(scores));
+            maxScores.add(Collections.max(scores));
+            avgScores.add((int) Math.round(scores.stream().mapToInt(Integer::intValue).average().orElse(0.0)));
+            studentScoresList.add(currentStudentScoresMap.getOrDefault(exam, 0));
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("labels", labels);
+        result.put("minScores", minScores);
+        result.put("avgScores", avgScores);
+        result.put("maxScores", maxScores);
+        result.put("studentScores", studentScoresList);
+
+        return result;
+    }
+
 }
 

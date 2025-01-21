@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -77,6 +77,13 @@
         font-size: 14px;
     }
 </style>
+<style>
+    .list-group-item.active {
+        background-color: #A5D6A7; /* 클릭된 버튼의 배경색 */
+        color: #fff; /* 클릭된 버튼의 텍스트 색상 */
+        font-weight: bold; /* 강조 효과 */
+    }
+</style>
 
 <body>
 <div th:replace="~{nav :: navbar}"></div>
@@ -87,18 +94,24 @@
                 <span class="detail-name" th:text="${detail.name}"></span>
 
                 <ul class="sub-list mt-2" th:if="${sCodeToSMonth[detail.code] != null and not #lists.isEmpty(sCodeToSMonth[detail.code])}">
-                    <li th:each="month : ${sCodeToSMonth[detail.code]}" th:text="${month}+'월'" class="list-group-item ps-5"></li>
+                    <li th:each="month : ${sCodeToSMonth[detail.code]}"
+                        th:attr="onclick=|loadChart('${detail.code}', '${month}')|"
+                        th:text="${month} + '월'"
+                        class="list-group-item ps-5"></li>
                 </ul>
 
                 <p th:if="${sCodeToSMonth[detail.code] == null or #lists.isEmpty(sCodeToSMonth[detail.code])}">
-                    업데이트 된 성적 정보가 없어요🥹
+                    성적 정보가 없어요🥹
                 </p>
             </li>
         </ul>
     </aside>
 
     <div class="main-content">
-        <h3 th:text="${displayName} + '의'+'점수 차트'">학생 개인 성적 차트</h3>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <h3 th:text="${displayName}">학생 개인 성적 차트</h3>
+            <h3 id="chartTitle"></h3>
+        </div>
         <canvas id="scoreChart" width="400" height="200"></canvas>
     </div>
 
@@ -121,7 +134,34 @@
             });
         });
 
+        function loadChart(code, month) {
+            fetch(`/score/chart?code=${code}&month=${month}`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to fetch chart data");
+                    return response.json();
+                })
+                .then(data => {
+                    // 차트 생성
+                    createChart(data);
+
+                    // 제목 업데이트
+                    const chartTitleElement = document.querySelector("#chartTitle"); // <h3> 요소 선택
+                    if (chartTitleElement) {
+                        chartTitleElement.textContent = `${month}월 성적차트`; // 제목 업데이트
+                    } else {
+                        console.error("Chart title element not found.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching chart data:", error);
+                });
+        }
+
     </script>
+    <script>
+        const displayName = /*[[${displayName}]]*/ ''; // 서버에서 전달된 사용자 이름
+    </script>
+
 
     <script th:inline="javascript">
         const labels = /*[[${labels}]]*/ [];
@@ -129,78 +169,77 @@
         const avgScores = /*[[${avgScores}]]*/ [];
         const maxScores = /*[[${maxScores}]]*/ [];
         const studentScores = /*[[${studentScores}]]*/ [];
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const ctx = document.getElementById("scoreChart").getContext("2d");
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: '최소 점수',
-                            data: minScores,
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: '평균 점수',
-                            data: avgScores,
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: '최대 점수',
-                            data: maxScores,
-                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: '내 점수',
-                            data: studentScores,
-                            type: 'line',
-                            fill: false,
-                            borderColor: 'rgba(255, 206, 86, 1)',
-                            tension: 0.1,
-                            borderWidth: 2,
-                            pointBackgroundColor: 'rgba(255, 206, 86, 1)',
-                            pointRadius: 4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 12,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: '시험 회차'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: '성적 분포도'
-                        }
-                    }
-                }
-            });
-        });
     </script>
+
+<script>
+    let chartInstance; // 전역 변수로 차트 인스턴스를 저장
+
+    function createChart(data) {
+    // 기존 차트가 있다면 삭제
+    if (chartInstance) {
+    chartInstance.destroy();
+    }
+
+    const ctx = document.getElementById("scoreChart").getContext("2d");
+    chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+    labels: data.labels,
+    datasets: [
+    {
+    label: '최소 점수',
+    data: data.minScores,
+    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    borderColor: 'rgba(255, 99, 132, 1)',
+    borderWidth: 1
+    },
+    {
+    label: '평균 점수',
+    data: data.avgScores,
+    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+    borderColor: 'rgba(54, 162, 235, 1)',
+    borderWidth: 1
+    },
+    {
+    label: '최대 점수',
+    data: data.maxScores,
+    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+    borderColor: 'rgba(75, 192, 192, 1)',
+    borderWidth: 1
+    },
+    {
+    label: '내 점수',
+    data: data.studentScores,
+    type: 'line', // 선 그래프
+    fill: false,
+    borderColor: 'rgba(255, 206, 86, 1)',
+    tension: 0.1,
+    borderWidth: 2,
+    pointBackgroundColor: 'rgba(255, 206, 86, 1)',
+    pointRadius: 4
+    }
+    ]
+    },
+    options: {
+    responsive: true,
+    scales: {
+    y: {
+    beginAtZero: true,
+    max: Math.max(...data.maxScores) + 2 || 12,
+    ticks: { stepSize: 1 }
+    },
+    x: {
+    title: { display: true, text: '시험 회차' }
+    }
+    },
+    plugins: {
+    legend: { position: 'top' },
+    title: { display: true, text: '성적 분포도' }
+    }
+    }
+    });
+    }
+</script>
     <script>
         const menuToggle = document.querySelector('.menu-toggle');
         const navMenu = document.querySelector('.nav-menu');
@@ -212,6 +251,21 @@
                 navRight.classList.toggle('active');
             }
         });
+    </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const sidebarItems = document.querySelectorAll(".list-group-item");
+
+    sidebarItems.forEach(item => {
+    item.addEventListener("click", function () {
+    // 기존 활성화된 항목에서 active 클래스 제거
+    sidebarItems.forEach(el => el.classList.remove("active"));
+
+    // 현재 클릭된 항목에 active 클래스 추가
+    this.classList.add("active");
+    });
+    });
+    });
     </script>
 </main>
 </body>
