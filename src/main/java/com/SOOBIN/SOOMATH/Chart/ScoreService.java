@@ -33,17 +33,31 @@ public class ScoreService {
         String[] exams = null;
 
         while ((line = reader.readLine()) != null) {
+            // 빈 줄 처리
+            if (line.trim().isEmpty()) {
+                System.out.println("Empty line skipped.");
+                continue;
+            }
+
             String[] data = line.split("\t");
 
-            // 줄이 학년/반/월 정보로 시작하는지 확인
+            // 데이터 길이 확인
+            if (data.length == 0) {
+                System.out.println("Invalid line format: " + line);
+                continue;
+            }
+
+            // 학년/반/월 정보 처리
             if (data[0].matches("\\d+-\\d+\\(\\d+\\)")) {
                 exams = Arrays.stream(data, 1, data.length)
                         .filter(s -> !s.trim().isEmpty()) // 빈 문자열 제거
                         .toArray(String[]::new);
+
                 if (exams.length == 0) {
                     System.out.println("No exam information found: " + line);
                     continue;
                 }
+
                 separated = data[0].substring(0, data[0].indexOf('('));
                 month = data[0].substring(data[0].indexOf('(') + 1, data[0].indexOf(')'));
 
@@ -51,36 +65,47 @@ public class ScoreService {
                 try {
                     updateSeparatedWithMonth(separated, month);
                 } catch (RuntimeException e) {
-                    System.out.println("Error: " + e.getMessage());
-                    return; // 오류 발생 시 작업 중단
+                    System.out.println("Error updating separated with month: " + e.getMessage());
+                    continue; // 오류 발생 시 현재 줄만 건너뜀
                 }
                 continue;
             }
 
-            // 실제 성적 데이터를 처리
+            // 성적 데이터 처리
             String username = data[0];
             Optional<Member> memberOpt = memberRepository.findByUsername(username);
 
-            if (memberOpt.isPresent()) {
-                Member member = memberOpt.get();
+            if (!memberOpt.isPresent()) {
+                System.out.println("Member not found for username: " + username);
+                continue;
+            }
 
-                // 각 주차별 점수 저장
-                for (int i = 1; i < data.length; i++) {
-                    try {
-                        Score score = new Score();
-                        score.setMember(member);
-                        score.setExam(exams[i - 1].trim()); // 주차 및 회차 정보 (예: "1.1")
-                        score.setScore(Integer.parseInt(data[i].trim()));  // 점수 값
-                        score.setSeparated(separated);
-                        score.setMonth(month);  // 월 정보 설정
-                        scoreRepository.save(score);
-                    } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                        System.out.println("Invalid data format for username " + username + ": " + line);
-                    }
+            Member member = memberOpt.get();
+
+            // 각 주차별 점수 저장
+            for (int i = 1; i < data.length; i++) {
+                if (exams == null || i - 1 >= exams.length) {
+                    System.out.println("Exam information missing for username: " + username);
+                    break;
+                }
+
+                try {
+                    Score score = new Score();
+                    score.setMember(member);
+                    score.setExam(exams[i - 1].trim()); // 주차 및 회차 정보 (예: "1.1")
+                    score.setScore(Integer.parseInt(data[i].trim())); // 점수 값
+                    score.setSeparated(separated);
+                    score.setMonth(month); // 월 정보 설정
+                    scoreRepository.save(score);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid score format for username " + username + ": " + data[i]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Exam index out of bounds for username " + username + ": " + line);
                 }
             }
         }
     }
+
     // 분반(sCode)에 월(month)을 추가하는 메서드
     private void updateSeparatedWithMonth(String separated, String month) {
         Optional<Separated> separatedOpt = separatedRepository.findBysCode(separated);
