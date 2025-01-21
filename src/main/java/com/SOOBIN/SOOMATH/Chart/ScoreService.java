@@ -2,6 +2,8 @@ package com.SOOBIN.SOOMATH.Chart;
 
 import com.SOOBIN.SOOMATH.Member.Member;
 import com.SOOBIN.SOOMATH.Member.MemberRepository;
+import com.SOOBIN.SOOMATH.Member.Separated;
+import com.SOOBIN.SOOMATH.Member.SeparatedRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,10 +17,12 @@ public class ScoreService {
 
     private final MemberRepository memberRepository;
     private final ScoreRepository scoreRepository;
+    private final SeparatedRepository separatedRepository;
 
-    public ScoreService(MemberRepository memberRepository, ScoreRepository scoreRepository) {
+    public ScoreService(MemberRepository memberRepository, ScoreRepository scoreRepository,SeparatedRepository separatedRepository) {
         this.memberRepository = memberRepository;
         this.scoreRepository = scoreRepository;
+        this.separatedRepository = separatedRepository;
     }
 
     public void parseAndSaveScores(MultipartFile file) throws IOException {
@@ -42,9 +46,16 @@ public class ScoreService {
                 }
                 separated = data[0].substring(0, data[0].indexOf('('));
                 month = data[0].substring(data[0].indexOf('(') + 1, data[0].indexOf(')'));
+
+                // 분반(sCode)와 월(month)을 확인 및 업데이트
+                try {
+                    updateSeparatedWithMonth(separated, month);
+                } catch (RuntimeException e) {
+                    System.out.println("Error: " + e.getMessage());
+                    return; // 오류 발생 시 작업 중단
+                }
                 continue;
             }
-
 
             // 실제 성적 데이터를 처리
             String username = data[0];
@@ -68,6 +79,25 @@ public class ScoreService {
                     }
                 }
             }
+        }
+    }
+    // 분반(sCode)에 월(month)을 추가하는 메서드
+    private void updateSeparatedWithMonth(String separated, String month) {
+        Optional<Separated> separatedOpt = separatedRepository.findBysCode(separated);
+
+        if (separatedOpt.isPresent()) {
+            Separated existingSeparated = separatedOpt.get();
+
+            // sMonth에 month가 포함되어 있는지 확인
+            if (!existingSeparated.getSMonth().contains(month)) {
+                existingSeparated.getSMonth().add(month); // month 추가
+                separatedRepository.save(existingSeparated); // 업데이트 저장
+            } else {
+                System.out.println("Month already exists for sCode: " + separated);
+            }
+        } else {
+            // 분반이 존재하지 않으면 오류 발생
+            throw new RuntimeException("Separated with sCode '" + separated + "' does not exist.");
         }
     }
 
