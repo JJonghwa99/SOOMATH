@@ -3,6 +3,8 @@ package com.SOOBIN.SOOMATH.Member;
 import com.SOOBIN.SOOMATH.Member.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -195,4 +198,47 @@ public class MemberController {
             return "error";
         }
     }
+    @GetMapping("/admin/separated")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String separated(Model model) {
+        // 분반 데이터를 데이터베이스에서 가져오기
+        List<Separated> separatedDetails = SeparatedRepository.findAll(); // Repository를 통해 모든 분반 정보 조회
+        model.addAttribute("separatedDetails", separatedDetails); // 모델에 데이터 추가
+        return "editSeparated"; // Thymeleaf 템플릿 이름
+    }
+    /*// 분반 저장 (수정)
+    @PutMapping("/admin/separated/save")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> saveSeparated(@RequestBody Separated separated) {
+        Optional<Separated> existingSeparated = SeparatedRepository.findBysCode(separated.getSCode());
+        if (existingSeparated.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 분반 코드입니다.");
+        }
+        existingSeparated.get().setSName(separated.getSName());
+        SeparatedRepository.save(existingSeparated.get());
+        return ResponseEntity.ok("✅수정완료");
+    }*/
+
+    @DeleteMapping("/admin/separated/delete/{sCode}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> deleteSeparated(@PathVariable String sCode) {
+        try {
+            SeparatedRepository.deleteById(sCode); // 데이터베이스에서 삭제
+            return ResponseEntity.ok("✅삭제완료");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌삭제 실패!");
+        }
+    }
+
+    /*// 분반 추가
+    @PostMapping("/admin/separated/add")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> addSeparated(@RequestBody Separated separated) {
+        if (SeparatedRepository.findBysCode(separated.getSCode()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 분반 코드입니다.");
+        }
+        SeparatedRepository.save(separated);
+        return ResponseEntity.ok("✅추가완료");
+    }*/
+
 }

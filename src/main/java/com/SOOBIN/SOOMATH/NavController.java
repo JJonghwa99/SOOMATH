@@ -17,4 +17,6 @@ public class NavController {
         return "login.html";
     }
 
+
+
 }
