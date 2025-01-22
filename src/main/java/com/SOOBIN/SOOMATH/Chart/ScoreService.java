@@ -196,8 +196,10 @@ public class ScoreService {
     public Map<String, Object> getScoresByCodeAndMonth(String username, String code, String month) {
         // 현재 학생의 점수 데이터 가져오기
         List<Score> studentScores = scoreRepository.findByMemberUsernameAndSeparatedAndMonth(username, code, month);
+        // 같은 month와 separated를 가진 모든 점수 가져오기
+        List<Score> allScores = scoreRepository.findByMonthAndSeparated(month, code);
 
-        if (studentScores.isEmpty()) {
+        if (allScores.isEmpty()) {
             return new HashMap<>();
         }
 
@@ -205,12 +207,15 @@ public class ScoreService {
         Map<String, List<Integer>> examScoresMap = new TreeMap<>();
         Map<String, Integer> currentStudentScoresMap = new TreeMap<>();
 
-        for (Score score : studentScores) {
+        // 모든 점수를 시험별로 분류
+        for (Score score : allScores) {
             String exam = score.getExam();
             examScoresMap.computeIfAbsent(exam, k -> new ArrayList<>()).add(score.getScore());
 
             // 현재 학생의 점수 따로 저장
-            currentStudentScoresMap.put(exam, score.getScore());
+            if (score.getMember().getUsername().equals(username)) {
+                currentStudentScoresMap.put(exam, score.getScore());
+            }
         }
 
         // 결과 데이터 준비
@@ -220,23 +225,37 @@ public class ScoreService {
         List<Integer> maxScores = new ArrayList<>();
         List<Integer> studentScoresList = new ArrayList<>();
 
+        // 각 시험별 통계 계산
         for (String exam : labels) {
             List<Integer> scores = examScoresMap.get(exam);
             minScores.add(Collections.min(scores));
             maxScores.add(Collections.max(scores));
-            avgScores.add((int) Math.round(scores.stream().mapToInt(Integer::intValue).average().orElse(0.0)));
+
+            // 평균 계산
+            double avg = scores.stream()
+                    .mapToInt(Integer::intValue)
+                    .average()
+                    .orElse(0.0);
+            avgScores.add((int) Math.round(avg));
+
+            // 현재 학생의 점수 추가
             studentScoresList.add(currentStudentScoresMap.getOrDefault(exam, 0));
         }
 
+        // 결과 맵 생성
         Map<String, Object> result = new HashMap<>();
         result.put("labels", labels);
         result.put("minScores", minScores);
         result.put("avgScores", avgScores);
         result.put("maxScores", maxScores);
         result.put("studentScores", studentScoresList);
+        result.put("month", month);  // 월 정보 추가
+        result.put("separated", code);  // 반 정보 추가
 
         return result;
     }
+
+
 
 }
 
