@@ -13,6 +13,77 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/img/green_8logo.png">
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 </head>
+<!--<style>
+    /* Modal container */
+    .m2-modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Modal content */
+    .m2-modal-content {
+        font-family: 'Pretendard', sans-serif;
+        background-color: #fefefe;
+        margin: auto; /* 화면 중앙에 고정 */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 400px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        animation: animatetop 0.4s;
+        position: relative; /* 닫기 버튼 위치 조정을 위해 필요 */
+        top: 50%; /* 화면 중앙에 고정 */
+        transform: translateY(-50%); /* 화면 중앙에 고정 */
+    }
+    .m2-button {
+        font-family: 'Pretendard', sans-serif;
+        background-color: #87CEEB;
+        color: white;
+        padding: 10px 20px;
+        margin-top:1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        font-weight:bold;
+    }
+
+    .m2-button:hover {
+        font-family: 'Pretendard', sans-serif;
+        background-color: #20B2AA;
+        color: black;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 24px;
+        flex: 1;
+        text-align: center;
+    }
+    .modal-close {
+        position: absolute;
+        top: 5px;
+        right: 18px;
+        color: #aaa;
+        font-size: 30px;
+        cursor: pointer;
+    }
+</style>-->
 <body>
 <!-- 네비게이션 바 포함 -->
 <div th:replace="~{nav :: navbar}"></div>
@@ -38,7 +109,7 @@
                             <h id="capslock-message">😰입력정보를 다시 확인해주세요!</h>
                         </div>
                         <div id="capslock-message" style="color: red; margin-top: 1rem;"></div>
-                        <a id="forgot-password-link" class="link" onclick="openM2()">비밀번호를 잊어버리셨나요?</a>
+                        <!--<a id="forgot-password-link" class="link" onclick="openM2()">비밀번호를 잊어버리셨나요?</a>-->
                     </div>
                     <div class="action">
                         <button class="button-text" id="login_button" type='submit'>로그인</button>
@@ -48,30 +119,58 @@
             </div>
         </div>
     </div>
+
+    <!--<div id="m2" class="m2-modal" style="display: none">
+        <div class="m2-modal-content">
+            <div class="modal-header">
+                <span class="modal-close" onclick="closeM2()">&times;</span>
+                <h2 style=>비밀번호 찾기</h2>
+            </div>
+            <div class="modal-body" id="passwordUpdateModalStep1">
+                <div class="input-group flex-nowrap">
+                    <input type="text" class="form-control" name="username" id="id" placeholder="아이디">
+                </div>
+                <div class="input-group flex-nowrap" style="margin-top:1rem;">
+                    <input class="form-control" id="email" required="/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)?$/i" type="email" placeholder="상담카드에 작성한 이메일 입력">
+                </div>
+                <div id="error-message1" style="color: red; margin-top: 1rem;"></div>
+                <button class="m2-button" onclick="verifyCurrentPassword1()">확인</button>
+            </div>
+            <div id="passwordUpdateModalStep2" style="display: none;">
+                <p style="margin-top:1rem">보안을 위해 8자리 이상 입력해주세요!😊</p>
+                <input type="password" id="newPassword" placeholder="새 비밀번호" class="form-control">
+                <input type="password" id="confirmNewPassword" placeholder="새 비밀번호 확인" class="form-control" style="margin-top:1rem">
+                <div id="error-message2" style="color: red; margin-top: 1rem;"></div>
+                <button class="m2-button" onclick="changePassword()">변경하기</button>
+            </div>
+        </div>
+    </div>-->
+</main>
+
     <script>
         // 비밀번호 보이기/숨기기 토글 함수
-function togglePassword() {
-    const passwordField = document.getElementById('password');
-    const toggleIcon = document.querySelector('.show-password');
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        const toggleIcon = document.querySelector('.show-password');
 
-    if (passwordField.type === "password") {
-        passwordField.type = "text";
-        toggleIcon.textContent = "🐵";
-    } else {
-        passwordField.type = "password";
-        toggleIcon.textContent = "🙈";
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.textContent = "🐵";
+        } else {
+            passwordField.type = "password";
+            toggleIcon.textContent = "🙈";
+        }
     }
-}
 
-// Caps Lock 체크 함수
-function checkCapsLock(event) {
-    const capsLockMessage = document.getElementById('capslock-message');
-    if (event.getModifierState('CapsLock')) {
-        capsLockMessage.textContent = '⚠️ Caps Lock이 켜져있습니다';
-    } else {
-        capsLockMessage.textContent = '';
+    // Caps Lock 체크 함수
+    function checkCapsLock(event) {
+        const capsLockMessage = document.getElementById('capslock-message');
+        if (event.getModifierState('CapsLock')) {
+            capsLockMessage.textContent = '⚠️ Caps Lock이 켜져있습니다';
+        } else {
+            capsLockMessage.textContent = '';
+        }
     }
-}
     </script>
     <script>
         const menuToggle = document.querySelector('.menu-toggle');
@@ -85,8 +184,19 @@ function checkCapsLock(event) {
             }
         });
     </script>
-</main>
-<!--로그인용 스크립트 없음// 공지용 게시판도 필요-->
+    <script>
+        function openM2() {
+            document.getElementById('m2').style.display = 'block';
+        }
+
+        function closeM2() {
+            document.getElementById('m2').style.display = 'none';
+            document.getElementById('error-message1').textContent = '';
+        }
+    </script>
+
+<!--로그인용 스크립트 없음// 공지용 게시판도 필요--><!--비밀번호 찾기모달-->
+
 
 </body>
 </html>
