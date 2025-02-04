@@ -13,5 +13,5 @@ class CustomUser extends User {
     public CustomUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
     }
-    //displayName 받아오기위해서 수정 ㅅㅂ th 문법쓰면 됐는데 이거 때문에 ㅅㅃ
+    //displayName 받아오기위해서 수정 th 문법쓰면 됐는데
 }

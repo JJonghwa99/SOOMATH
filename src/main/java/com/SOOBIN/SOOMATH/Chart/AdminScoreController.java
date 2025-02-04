@@ -26,18 +26,23 @@ public class AdminScoreController {
     private final ScoreService scoreService;
     private final MyUserDetailsService myuserDetailsService;
     private final SeparatedRepository separatedRepository;
+    private final ScoreRepository scoreRepository;
 
     @Autowired
-    public AdminScoreController(MemberRepository memberRepository, ScoreService scoreService, MyUserDetailsService myUserDetailsService, SeparatedRepository separatedRepository) {
+    public AdminScoreController(MemberRepository memberRepository, ScoreService scoreService, MyUserDetailsService myUserDetailsService, SeparatedRepository separatedRepository, ScoreRepository scoreRepository) {
         this.memberRepository = memberRepository;
         this.scoreService = scoreService;
         this.myuserDetailsService = myUserDetailsService;
         this.separatedRepository = separatedRepository;
+        this.scoreRepository = scoreRepository;
     }
 
     @GetMapping
     public String adminScore(Model model) {
         List<MyUserDetailsService.MemberDTO> members = myuserDetailsService.getAllMembers();
+        List<Separated> courses = separatedRepository.findAll();
+
+        model.addAttribute("courses", courses);
         model.addAttribute("members", members);
         return "score";
     }
