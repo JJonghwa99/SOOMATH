@@ -36,7 +36,7 @@
                 <th>학번</th>
                 <th>이름</th>
                 <th>
-                    <div style="display: flex; align-items: center; width: 100%;">
+                    <div style="display: flex; align-items: center; width: 100%;" >
                         <select id="separatedFilter" class="form-control selectpicker" multiple data-actions-box="true" onchange="filterMembers()" data-container="body" data-none-selected-text="분반필터" >
                             <option th:each="course : ${courses}"
                                     th:value="${course.sCode}"
