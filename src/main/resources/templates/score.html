@@ -73,8 +73,17 @@
             <tr th:each="member : ${members}">
                 <td th:text="${member.username}"></td>
                 <td th:text="${member.displayName}" class="bold-text"></td>
-                <td th:text="${member.schoolName}" class="bold-text"></td>
-                <td th:text="${member.grade}" class="bold-text"></td>
+                <td>
+                    <select id="separated-select" class="form-control selectpicker" name="separated[]" multiple data-actions-box="true" data-container="body" disabled >
+                        <!-- 동적으로 옵션 생성 -->
+                        <option th:each="course : ${courses}"
+                                th:value="${course.sCode}"
+                                th:text="${course.sName}"
+                                th:selected="${#lists.contains(member.separated, course.sCode)}">
+                        </option>
+                    </select>
+                </td>
+            <td th:text="${member.schoolName}" class="bold-text"></td>
                 <td>
                     <a th:href="@{/admin/score/image(username=${member.username})}" class="btn btn-primary"><i class="fas fa-chart-line"></i></a>
                 </td>
@@ -106,43 +115,30 @@
 </script>
 <script>
     function filterMembers() {
-        const gradeFilter = document.getElementById("gradeFilter").value;
-        const schoolFilter = document.getElementById("schoolFilter").value;
+        let schoolFilter = document.getElementById("schoolFilter").value;
+        let separatedFilter = Array.from(document.getElementById("separatedFilter").selectedOptions).map(option => option.value);
 
-        // 분반 필터: 선택된 값 배열 가져오기
-        const separatedFilter = Array.from(document.getElementById("separatedFilter").selectedOptions)
-            .map(option => option.value);
+        let rows = document.querySelectorAll(".member-list tbody tr");
 
-        const rows = document.querySelectorAll("table tr");
+        rows.forEach(row => {
+            let schoolName = row.querySelector("td:nth-child(4)").textContent.trim();
+            let separatedOptions = Array.from(row.querySelector("#separated-select").selectedOptions).map(option => option.value);
 
-        rows.forEach((row, index) => {
-            if (index === 0) return; // 첫 번째 행은 헤더이므로 제외
+            let schoolMatch = schoolFilter === "" || schoolName === schoolFilter;
+            let separatedMatch = separatedFilter.length === 0 || separatedFilter.every(code => separatedOptions.includes(code));
 
-            const gradeInput = row.querySelector(".grade-input");
-            const schoolInput = row.querySelector(".school-input");
-            const separatedSelect = row.querySelector("#separated-select"); // 분반 데이터가 있는 <select> 요소
-
-            const grade = gradeInput ? gradeInput.value : "";
-            const school = schoolInput ? schoolInput.value : "";
-
-            // 선택된 분반 데이터를 가져오기
-            const separatedText = separatedSelect
-                ? Array.from(separatedSelect.selectedOptions).map(option => option.value)
-                : [];
-
-            // 필터링 조건
-            const gradeMatch = gradeFilter === "" || grade.toString() === gradeFilter;
-            const schoolMatch = schoolFilter === "" || school === schoolFilter;
-
-            // 선택된 분반 필터의 모든 값이 포함되어 있는지 확인
-            const separatedMatch = separatedFilter.length === 0 ||
-                separatedFilter.every(filter => separatedText.includes(filter));
-
-            // 필터 칸의 행은 항상 표시
-            const isFilterRow = row.querySelector("th"); // 각 행이 헤더인지 확인
-            row.style.display = (isFilterRow || (gradeMatch && schoolMatch && separatedMatch)) ? "" : "none";
+            if (schoolMatch && separatedMatch) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
         });
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("schoolFilter").addEventListener("change", filterMembers);
+        document.getElementById("separatedFilter").addEventListener("change", filterMembers);
+    });
 </script>
 <script>
     const menuToggle = document.querySelector('.menu-toggle');

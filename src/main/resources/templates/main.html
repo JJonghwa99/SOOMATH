@@ -340,20 +340,20 @@
             <h3 tyle="text-align: center;">❗⚠️공지사항⚠️❗</h3>
         </div>-->
             <div class="ranking-section">
-                <h3 align="center">👑학생 랭킹👑</h3>
-                <h6>-숙제 부문 TOP 1</h6>
+                <h3 align="center">👑학생 질문 랭킹👑</h3>
+                <!--<h6>-숙제 부문 TOP 1</h6>
                 <h6 style="text-style:bold"></h6>
                 <h6>-질문 부문 TOP 1</h6>
                 <h6 style="text-style:bold"></h6>
                 <h6>-시험 부문 TOP 1</h6>
-                <h6 style="text-style:bold"></h6>
-                <!--<h6 align="center">-질문을 많이 한 학생 순서에요😁</h6>
+                <h6 style="text-style:bold"></h6>-->
+                <h6 align="center">-질문을 많이 한 학생 순서대로 표시돼요😁</h6>
                 <ul>
-                    &lt;!&ndash; 서버에서 전달받은 rankings 리스트를 출력 &ndash;&gt;
+                    <!-- 서버에서 전달받은 rankings 리스트를 출력 -->
                     <th:block th:each="ranking, iterStat : ${rankings}">
                         <li th:text="${iterStat.index + 1} + '위. ' + ${ranking['nickName']}"></li>
                     </th:block>
-                </ul>-->
+                </ul>
             </div>
         </div>
     </div>
