@@ -35,9 +35,9 @@
         <!-- 오른쪽 영역 -->
         <div class="right-section">
             <div class="review-container" sec:authorize="isAnonymous() or hasAuthority('ROLE_VISITOR')">
-                <h3>수강생 리뷰<h6>&nbsp&nbsp&nbsp&nbsp*실제 수강생 설문을 통한 리뷰에요😁</h6></h3>
-                <h11>&nbsp&nbsp&nbsp&nbsp**모바일에서는 표시가 안될 수 있어요🥹</h11>
-                <h12>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp pc에서 확인해주세요👌</h12>
+                <h3>수강생 리뷰<h6>&nbsp&nbsp&nbsp&nbsp * 실제 수강생 설문을 통한 리뷰에요😁</h6></h3>
+                <h11>&nbsp&nbsp&nbsp&nbsp ** 모바일에서는 표시가 안될 수 있어요🥹</h11><br>
+                <h12>&nbsp&nbsp&nbsp&nbsp *** pc에서 확인해주세요👌</h12>
                 <div class="review-wrapper">
                     <div class="card-slider">
                         <div class="review-card">
@@ -340,14 +340,44 @@
             <h3 tyle="text-align: center;">❗⚠️공지사항⚠️❗</h3>
         </div>-->
             <div class="ranking-section">
-                <h3 align="center">👑학생 질문 랭킹👑</h3>
-                <!--<h6>-숙제 부문 TOP 1</h6>
-                <h6 style="text-style:bold"></h6>
-                <h6>-질문 부문 TOP 1</h6>
-                <h6 style="text-style:bold"></h6>
-                <h6>-시험 부문 TOP 1</h6>
-                <h6 style="text-style:bold"></h6>-->
-                <h6 align="center">-질문을 많이 한 학생 순서대로 표시돼요😁</h6>
+                <h3 align="center">👑분반별 학생 랭킹👑</h3>
+                <div style="max-width: 600px; margin: 0 auto; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                    <h2 style="border-bottom: 2px solid #333; padding-bottom: 5px;">수1 기본반</h2>
+                    <p><strong>성실왕:</strong> 이동혁네 집 청소부지망생, yed , G</p>
+                    <p><strong>질문왕:</strong> 병고대장 , 숲</p>
+
+                    <h2 style="border-bottom: 2px solid #333; padding-bottom: 5px;">수1 심화반</h2>
+                    <p><strong>점수왕:</strong> 민영</p>
+                    <p><strong>성실왕:</strong> .</p>
+
+                    <h2 style="border-bottom: 2px solid #333; padding-bottom: 5px;">수2</h2>
+                    <p><strong>성실왕:</strong> 유채은, 이동혁네 집 청소부지망생, G, 민영, 짜라짜라짜짜짜짜 짜파게티, 진연</p>
+                    <p><strong>질문왕:</strong> 🙉 🙈 🙊, 경민, 사기북, 한종률</p>
+                    <p><strong>점수왕:</strong> jjj0815, 박민영</p>
+
+                    <h2 style="border-bottom: 2px solid #333; padding-bottom: 5px;">확통</h2>
+                    <p><strong>성실왕:</strong> 🎶, 렌지렌지오렌지</p>
+                    <p><strong>질문왕:</strong> 박주현, 권수현, 김민채</p>
+                    <p><strong>점수왕:</strong> 이동혁네 집 청소부지망생, 20411</p>
+
+                    <h2 style="border-bottom: 2px solid #333; padding-bottom: 5px;">기하</h2>
+                    <p><strong>성실왕:</strong> 한수아, 김정원</p>
+                    <p><strong>질문왕:</strong> 이강산, 한정우, 강다현</p>
+                    <p><strong>점수왕:</strong> 한수아, 김정원</p>
+
+                    <h2 style="border-bottom: 2px solid #333; padding-bottom: 5px;">미적분</h2>
+                    <p><strong>성실왕:</strong> gusdn</p>
+
+                    <h2 style="border-bottom: 2px solid #333; padding-bottom: 5px;">공수1 기본</h2>
+                    <p><strong>성실왕:</strong> 우와</p>
+                    <p><strong>질문왕:</strong> 김나은, 체리쥬봉빌레</p>
+                    <p><strong>점수왕:</strong> 이채윤, 차민규</p>
+
+                    <h2 style="border-bottom: 2px solid #333; padding-bottom: 5px;">공수1 심화</h2>
+                    <p><strong>성실왕:</strong> 김래은</p>
+                    <p><strong>질문왕:</strong> 박시현</p>
+                    <p><strong>점수왕:</strong> ⎝⍥⎠, 김래은</p>
+                </div>
                 <ul>
                     <!-- 서버에서 전달받은 rankings 리스트를 출력 -->
                     <th:block th:each="ranking, iterStat : ${rankings}">
